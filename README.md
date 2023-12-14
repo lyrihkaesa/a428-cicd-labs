@@ -12,3 +12,32 @@ The `jenkins` directory contains an example of the `Jenkinsfile` (i.e. Pipeline)
 you'll be creating yourself during the tutorial and the `scripts` subdirectory
 contains shell scripts with commands that are executed when Jenkins processes
 the "Test" and "Deliver" stages of your Pipeline.
+
+```bash
+docker run \
+  --name jenkins-blueocean \
+  --detach \
+  --network jenkins \
+  --env DOCKER_HOST=tcp://docker:2376 \
+  --env DOCKER_CERT_PATH=/certs/client \
+  --env DOCKER_TLS_VERIFY=1 \
+  --publish 49000:8080 \
+  --publish 50000:50000 \
+  --volume jenkins-data:/var/jenkins_home \
+  --volume jenkins-docker-certs:/certs/client:ro \
+  --volume "$HOME":/home \
+  --restart=on-failure \
+  --env JAVA_OPTS="-Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true" \
+  myjenkins-blueocean:2.361.1-1 
+```
+
+```bash
+docker run \
+  -d \
+  --name nginx-reverse-proxy \
+  --network jenkins \
+  -p 80:80 \
+  -p 9000:9000 \
+  -v "$HOME/Development/a428-cicd-labs/nginx.conf":/etc/nginx/conf.d/default \
+  nginx
+```
