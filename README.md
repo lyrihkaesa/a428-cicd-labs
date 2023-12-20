@@ -41,3 +41,22 @@ docker run \
   -v "$HOME/Development/a428-cicd-labs/nginx.conf":/etc/nginx/conf.d/default \
   nginx
 ```
+
+```bash
+docker run \
+  -d \
+  --name prometheus \
+  --network jenkins \
+  -p 9090:9090 \
+  prom/prometheus
+```
+
+```bash
+docker run \
+  -d \
+  --name grafana \
+  --network jenkins \
+  -p 3030:3030 \
+  -e "GF_SERVER_HTTP_PORT=3030" \
+  grafana/grafana
+```
